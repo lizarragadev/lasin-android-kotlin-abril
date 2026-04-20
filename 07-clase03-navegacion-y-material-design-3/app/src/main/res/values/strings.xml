@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Navegación &amp; Material Design 3</string>
+    <string name="home">Inicio</string>
+    <string name="search">Búsqueda</string>
+    <string name="profile">Perfil</string>
+    <string name="settings">Configuración</string>
+</resources>

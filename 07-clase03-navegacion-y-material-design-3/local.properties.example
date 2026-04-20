@@ -1,0 +1,3 @@
+# Copiar a local.properties y ajustar la ruta del SDK de Android Studio.
+# En macOS suele ser: ~/Library/Android/sdk
+sdk.dir=/ruta/a/Android/sdk

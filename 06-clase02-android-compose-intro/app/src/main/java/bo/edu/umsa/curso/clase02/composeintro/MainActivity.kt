@@ -68,7 +68,6 @@ private fun DemoComposeIntroScreen() {
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(horizontal = 20.dp)
-                .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(
@@ -103,9 +102,6 @@ private fun DemoComposeIntroScreen() {
             HorizontalDivider()
 
             Text(
-                text = "Más ejemplos (Card, Switch, chips) — también en Previews de ComposeClase2Extras",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             SeccionEjemplosMaterial3()
         }

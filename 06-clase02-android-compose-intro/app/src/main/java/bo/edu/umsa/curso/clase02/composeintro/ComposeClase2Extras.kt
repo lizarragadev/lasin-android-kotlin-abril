@@ -28,67 +28,33 @@ import androidx.compose.ui.unit.dp
 import bo.edu.umsa.curso.clase02.composeintro.ui.theme.Clase02ComposeIntroTheme
 
 /**
- * Ejemplos extra para la misma sesión (Clase 2): Card, chips, Switch, texto secundario.
- * Útil para mostrar en Previews sin saturar [MainActivity].
  */
 @Composable
 fun SeccionEjemplosMaterial3(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(
-            text = "Más componentes (demo)",
-            style = MaterialTheme.typography.titleMedium,
-        )
-
-        ElevatedCard {
-            Column(Modifier.padding(16.dp)) {
-                Text("ElevatedCard", style = MaterialTheme.typography.titleSmall)
-                Text(
-                    text = "Texto secundario con estilo bodyMedium.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+        
+            ElevatedCard {
+                Column(Modifier.padding(16.dp)) {
             }
         }
+    }
+}
 
-        Card {
-            Row(
-                modifier = Modifier.padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(Icons.Default.Info, contentDescription = null)
-                Text(
-                    text = "Card con fila e ícono",
-                    modifier = Modifier.padding(start = 8.dp),
-                )
-            }
-        }
-
-        var notificaciones by rememberSaveable { mutableStateOf(true) }
         Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text("Notificaciones")
-            Switch(checked = notificaciones, onCheckedChange = { notificaciones = it })
-        }
 
-        var filtroSoloInf by rememberSaveable { mutableStateOf(false) }
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             FilterChip(
-                selected = filtroSoloInf,
-                onClick = { filtroSoloInf = !filtroSoloInf },
-                label = { Text("Solo INF") },
             )
             AssistChip(
                 onClick = { },
-                label = { Text("Ayuda") },
             )
+            }
         }
-    }
 }
 
 @Preview(name = "Extras — claro", showBackground = true)
