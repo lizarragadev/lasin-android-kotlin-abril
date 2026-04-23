@@ -10,6 +10,49 @@ fun main() {
     whileYDoWhile()
     tablaDeMultiplicar(7, 10)
     calculadoraDeCategoria(1991)
+    funcionesConParametrosPorDefectoYNombrados()
+    funcionesLocalesYUnaLineal()
+    textoMultilinea()
+}
+
+fun textoMultilinea() {
+    println("- String multilinea -")
+    val bloque = """
+        Curso Android
+        Kotlin
+        LASIN
+    """.trimIndent()
+    println(bloque)
+}
+
+fun funcionesLocalesYUnaLineal() {
+    println("- Función local y de una sola expresión -")
+    // Función de una sola expresión
+    fun cuadrado(n: Int) = n * n
+
+    fun procesar(nums: List<Int>):Int {
+        // Función local, esta solo vive dentro de su funcion padre.
+        fun sumarPares(lista: List<Int>) = lista.filter { it % 2 == 0 }.sum()
+        // [2, 4]
+        // [4, 16]
+        return sumarPares(nums.map { cuadrado(it) })
+    }
+    println(" cuadrado(5) = ${cuadrado(5)}")
+
+    println(" procesar([1, 2, 3, 4]) suma de cuadrados pares = ${procesar(listOf(1, 2, 3, 4))} \n")
+}
+
+fun funcionesConParametrosPorDefectoYNombrados() {
+    println("- Parámetros por defecto y nombrados -")
+
+    fun saludar(nombre: String, formal: Boolean = false, veces: Int = 1) {
+        val texto = if(formal) "Estimad@ $nombre" else "Hola $nombre"
+        repeat(veces) { println(" $texto")}
+    }
+
+    saludar("Gustavo")
+    saludar("Josué", veces = 2)
+    saludar(nombre = "Luis", formal = true, veces = 3)
 }
 
 fun calculadoraDeCategoria(anioNacimiento: Int) {
