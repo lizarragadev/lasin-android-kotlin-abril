@@ -7,9 +7,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Alignment
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -68,6 +71,8 @@ private fun DemoComposeIntroScreen() {
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(horizontal = 20.dp)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(
@@ -102,8 +107,12 @@ private fun DemoComposeIntroScreen() {
             HorizontalDivider()
 
             Text(
+                text = "Más ejemplos (Layouts, Modificadores, Listas, Animación)",
+                style = MaterialTheme.typography.titleMedium,
             )
             SeccionEjemplosMaterial3()
+
+            Spacer(modifier = Modifier.padding(bottom = 24.dp))
         }
     }
 }
