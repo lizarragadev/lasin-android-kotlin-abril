@@ -10,33 +10,31 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import bo.edu.umsa.curso.clase03.navegacion.ui.components.StandardTopAppBar
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(onNavigateToProfile: (String) -> Unit) {
+fun HomeScreen(
+    onNavigateToProfile: (String) -> Unit,
+    onNavigateToAddData: () -> Unit,
+) {
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Inicio") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            )
+            StandardTopAppBar(title = "Inicio")
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Acción FAB */ },
+                onClick = onNavigateToAddData,
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
                 Icon(Icons.Filled.Add, contentDescription = "Agregar")

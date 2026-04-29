@@ -3,7 +3,9 @@ package bo.edu.umsa.curso.clase03.navegacion
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -17,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -45,72 +46,84 @@ fun MainApp() {
         bottomBar = {
             BottomNavigationBar(navController = navController)
         }
-    ) { _ ->
-        NavGraph(navController = navController)
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+        ) {
+            NavGraph(navController = navController)
+        }
     }
 }
 
+private data class BottomNavItem(
+    val navigateRoute: String,
+    val label: String,
+    val isSelected: (currentRoute: String?) -> Boolean,
+    val iconContentDescription: String,
+    val iconKey: BottomNavIcon,
+)
+
+private enum class BottomNavIcon { Home, Search, Profile, Settings }
+
 @Composable
 fun BottomNavigationBar(navController: androidx.navigation.NavHostController) {
+    val profileDefault = Screen.Profile.createRoute("default")
     val items = listOf(
-        Screen.Home,
-        Screen.Search,
-        Screen.Profile.createRoute("default"),
-        Screen.Settings
+        BottomNavItem(
+            navigateRoute = Screen.Home.route,
+            label = "Inicio",
+            isSelected = { it == Screen.Home.route },
+            iconContentDescription = "Inicio",
+            iconKey = BottomNavIcon.Home,
+        ),
+        BottomNavItem(
+            navigateRoute = Screen.Search.route,
+            label = "Búsqueda",
+            isSelected = { it == Screen.Search.route },
+            iconContentDescription = "Búsqueda",
+            iconKey = BottomNavIcon.Search,
+        ),
+        BottomNavItem(
+            navigateRoute = profileDefault,
+            label = "Perfil",
+            isSelected = { route -> route != null && route.startsWith("profile/") },
+            iconContentDescription = "Perfil",
+            iconKey = BottomNavIcon.Profile,
+        ),
+        BottomNavItem(
+            navigateRoute = Screen.Settings.route,
+            label = "Config",
+            isSelected = { it == Screen.Settings.route },
+            iconContentDescription = "Configuración",
+            iconKey = BottomNavIcon.Settings,
+        ),
     )
-    
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
-    
+    val currentRoute = navBackStackEntry?.destination?.route
+
     NavigationBar {
-        items.forEach { screen ->
-            val isSelected = currentDestination?.hierarchy?.any {
-                it.route == when (screen) {
-                    Screen.Home -> Screen.Home.route
-                    Screen.Search -> Screen.Search.route
-                    Screen.Settings -> Screen.Settings.route
-                    is Screen.Profile -> "profile/{userId}"
-                    else -> null
-                }
-            } ?: false
-            
+        items.forEach { item ->
             NavigationBarItem(
                 icon = {
-                    when (screen) {
-                        Screen.Home -> Icon(Icons.Filled.Home, contentDescription = "Inicio")
-                        Screen.Search -> Icon(Icons.Filled.Search, contentDescription = "Búsqueda")
-                        Screen.Settings -> Icon(Icons.Filled.Settings, contentDescription = "Configuración")
-                        is Screen.Profile -> Icon(Icons.Filled.Person, contentDescription = "Perfil")
-                        else -> {}
+                    when (item.iconKey) {
+                        BottomNavIcon.Home -> Icon(Icons.Filled.Home, contentDescription = item.iconContentDescription)
+                        BottomNavIcon.Search -> Icon(Icons.Filled.Search, contentDescription = item.iconContentDescription)
+                        BottomNavIcon.Profile -> Icon(Icons.Filled.Person, contentDescription = item.iconContentDescription)
+                        BottomNavIcon.Settings -> Icon(Icons.Filled.Settings, contentDescription = item.iconContentDescription)
                     }
                 },
-                label = {
-                    when (screen) {
-                        Screen.Home -> Text("Inicio")
-                        Screen.Search -> Text("Búsqueda")
-                        Screen.Settings -> Text("Config")
-                        is Screen.Profile -> Text("Perfil")
-                        else -> {}
-                    }
-                },
-                selected = isSelected,
+                label = { Text(item.label) },
+                selected = item.isSelected(currentRoute),
                 onClick = {
-                    val route = when (screen) {
-                        Screen.Home -> Screen.Home.route
-                        Screen.Search -> Screen.Search.route
-                        Screen.Settings -> Screen.Settings.route
-                        is Screen.Profile -> screen
-                        else -> return@NavigationBarItem
-                    }
-                    
-                    if (route is Screen) {
-                        navController.navigate(route.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
+                    navController.navigate(item.navigateRoute) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
                         }
+                        launchSingleTop = true
+                        restoreState = true
                     }
                 }
             )
