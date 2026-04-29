@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId = "bo.edu.umsa.curso.clase02.composeintro"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
     }

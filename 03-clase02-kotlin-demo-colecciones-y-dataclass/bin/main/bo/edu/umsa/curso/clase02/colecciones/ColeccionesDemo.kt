@@ -1,125 +1,210 @@
 package bo.edu.umsa.curso.clase02.colecciones
 
-/**
- * Clase 2 — data class, colecciones inmutables/mutables, map/filter/reduce, etc.
- */
-fun main() {
-    println("=== Demo: data class y funciones de orden superior ===\n")
-
-    val cursos = listOf(
-        Curso("Programación I", "INF", 4),
-        Curso("Base de Datos", "INF", 5),
-        Curso("Cálculo I", "MAT", 6),
-        Curso("Estructuras", "INF", 5),
-        Curso("Álgebra", "MAT", 6),
-    )
-
-    listasBasicasYDataClassCopy(cursos)
-    filterMapGroupBy(cursos)
-    sortedYDistinct(cursos)
-    anyAllNone(cursos)
-    flatMapEjemplo()
-    associateYAssociateBy(cursos)
-    partition(cursos)
-    foldYReduce()
-    mapVsMutableMap()
-}
-
-private data class Curso(
+data class Curso(
     val nombre: String,
     val carrera: String,
-    val creditos: Int,
+    val creditos: Int
 )
 
-private fun listasBasicasYDataClassCopy(cursos: List<Curso>) {
-    println("— data class: equals, copy —")
-    val a = cursos.first()
-    val b = a.copy()
-    println("  a == b (mismos campos, instancias distintas): ${a == b}")
-    val c = a.copy(creditos = 5)
-    println("  original: $a")
-    println("  con copy(creditos=5): $c\n")
+fun main() {
+    println("- Data class, funciones de orden superior -")
+
+    val cursos = listOf(
+        Curso("Programacion I", "INF", 4),
+        Curso("Base de Datos", "INF", 5),
+        Curso("Calculo I", "MAT", 2),
+        Curso("Estructuras", "INF", 6),
+        Curso("Algebra", "MAT", 1),
+    )
+    listasBasicasYDataClassCopy(cursos)
+    filterMapGroupBy(cursos)
+    sortedYDisctinct(cursos)
+    anyAllNone(cursos)
+    flatMap()
+    partitionDemo(cursos)
+    mapVsMutableMap()
+
+    ejemploClases()
+    ejemploDataClass()
+    ejemploHerencia()
+    ejemploInterfaces()
+    ejemploSealedClass()
 }
 
-private fun filterMapGroupBy(cursos: List<Curso>) {
-    println("— filter / map / groupBy —")
-    cursos.forEach { println("  $it") }
+class Persona(
+    val nombre: String,
+    val edad: Int
+) {
+     // no es necesario getters, setters, constructores
 
-    val soloInf = cursos.filter { it.carrera == "INF" }
-    println("\nSolo INF: ${soloInf.joinToString { it.nombre }}")
-
-    val nombres = cursos.map { it.nombre.uppercase() }
-    println("Nombres en mayúsculas: $nombres")
-
-    val porCarrera = cursos.groupBy { it.carrera }
-    println("\nAgrupados por carrera:")
-    porCarrera.forEach { (carrera, lista) ->
-        println("  $carrera: ${lista.joinToString { it.nombre }}")
+    fun presentarse() {
+        println("Hola, soy $nombre y tengo $edad años.")
     }
-
-    val creditosInf = cursos.filter { it.carrera == "INF" }.sumOf { it.creditos }
-    println("\nCréditos totales INF: $creditosInf\n")
 }
 
-private fun sortedYDistinct(cursos: List<Curso>) {
-    println("— sortedBy / distinctBy —")
-    val porNombre = cursos.sortedBy { it.nombre }
-    println("  por nombre: ${porNombre.map { it.nombre }}")
-
-    val conDup = cursos + cursos.first()
-    val unicosPorNombre = conDup.distinctBy { it.nombre }
-    println("  duplicados eliminados por nombre: ${unicosPorNombre.size} ítems\n")
+private fun ejemploClases() {
+    val persona = Persona("Luis", 24)
+    persona.presentarse()
 }
 
-private fun anyAllNone(cursos: List<Curso>) {
-    println("— any / all / none —")
+data class Cursoo(
+    val nombre: String,
+    val creditos: Int
+)
+
+fun ejemploDataClass() {
+    val curso1 = Cursoo("Programacion II", 5)
+    val curso2 = curso1.copy(creditos = 10)
+    println(curso1)
+    println(curso2)
+}
+
+open class Animal(val nombre: String) {
+    fun respirar(){
+        println("$nombre respirando...")
+    }
+}
+
+class Perro(nombre: String): Animal(nombre) {
+    fun ladrar() {
+        println("$nombre ladrando...")
+    }
+}
+
+fun ejemploHerencia() {
+    val perro = Perro("Firulais")
+
+    perro.respirar()
+    perro.ladrar()
+}
+
+interface Volador {
+    fun volar()
+}
+
+class Pajaro: Volador {
+    override fun volar() {
+        println("El pájaro está volando")
+    }
+}
+
+class Avion: Volador {
+    override fun volar() {
+        println("El avión esta planeando")
+    }
+}
+
+fun ejemploInterfaces() {
+    val pajaro = Pajaro()
+    val avion = Avion()
+    pajaro.volar()
+    avion.volar()
+}
+
+sealed class Resultado {
+    data class Exito(val datos: String): Resultado()
+    data class Error(val mensaje: String): Resultado()
+    object Cargando: Resultado()
+}
+
+fun ejemploSealedClass() {
+    val resultado: Resultado = Resultado.Exito("Datos cargados.")
+    val resultado2: Resultado = Resultado.Error("Error en la API")
+
+    when(resultado) {
+        is Resultado.Exito -> println("Éxito: ${resultado.datos}")
+        is Resultado.Error -> println("Error: ${resultado.mensaje}")
+        is Resultado.Cargando -> println("Cargando...")
+    }
+}
+
+fun mapVsMutableMap() {
+    println("- map vs mutableMap -")
+    // mapOf, mutableMapOf
+    val ro = mapOf("a" to 1, "b" to 2)
+    val rw = mutableMapOf("x" to 10)
+
+    println("Inmutable: $ro")
+    println("Mutable: $rw")
+    rw["y"] = 20
+    rw["x"] = 5
+    println("Mutable editado: $rw")
+}
+
+fun partitionDemo(cursos: List<Curso>) {
+    println("- partition -")
+    val (inf, resto) = cursos.partition { it.carrera == "INF" }
+    println("Solo INF: $inf")
+    println("Resto: $resto")
+}
+
+fun flatMap() {
+    println("- flatMap -")
+    val porCarrera: Map<String, List<String>> = mapOf(
+        "INF" to listOf("Prog I", "BD"),
+        "MAT" to listOf("Cálculo", "Álgebra")
+    )
+    val todasLasMaterias = porCarrera.flatMap { it.value }
+    println("Materias Aplanadas: $todasLasMaterias")
+}
+
+fun anyAllNone(cursos: List<Curso>) {
+    println("- any (al menos uno cumple?), all (todos cumplen?), none(ninguno cumple?) -")
+    cursos.forEach { println(it) }
+    println("----")
     val hayInf = cursos.any { it.carrera == "INF" }
     val todosMasDe3 = cursos.all { it.creditos > 3 }
     val ningunoQuim = cursos.none { it.carrera == "QUI" }
-    println("  ¿hay INF? $hayInf")
-    println("  ¿todos >3 créditos? $todosMasDe3")
-    println("  ¿ninguna carrera QUI? $ningunoQuim\n")
+    println("Hay INF? $hayInf")
+    println("Todos mas de 3? $todosMasDe3")
+    println("Ninguno de QUIM? $ningunoQuim")
+
 }
 
-private fun flatMapEjemplo() {
-    println("— flatMap (aplanar listas de listas) —")
-    val porCarrera: Map<String, List<String>> = mapOf(
-        "INF" to listOf("Prog I", "BD"),
-        "MAT" to listOf("Cálculo", "Álgebra"),
-    )
-    val todasLasMaterias = porCarrera.flatMap { it.value }
-    println("  materias aplanadas: $todasLasMaterias\n")
+fun sortedYDisctinct(cursos: List<Curso>) {
+    println("- sortedBy, distinctBy -")
+    cursos.forEach { println(it) }
+    println("----")
+    val porNombre = cursos.sortedBy { it.nombre }
+    porNombre.forEach { println(it) }
+    println("----")
+    val conDup = cursos + cursos.first()
+    cursos.forEach { println(it) }
+    println("********")
+    conDup.forEach { println(it) }
+    val unicosPorNombre = conDup.distinctBy { it.nombre }
+    println("********")
+    unicosPorNombre.forEach { println(it) }
 }
 
-private fun associateYAssociateBy(cursos: List<Curso>) {
-    println("— associate / associateBy —")
-    val nombreACreditos = cursos.associate { it.nombre to it.creditos }
-    println("  map nombre→créditos: $nombreACreditos")
-
-    val porNombre = cursos.associateBy { it.nombre }
-    println("  Curso de 'Álgebra': ${porNombre["Álgebra"]}\n")
+fun filterMapGroupBy(cursos: List<Curso>) {
+    // filter, map, groupBy
+    println("- filter, map, groupBy -")
+    cursos.forEach { println(it) }
+    println("----")
+    val soloInf = cursos.filter { it.carrera == "INF" }
+    println("Solo INF: $soloInf")
+    println("----")
+    val nombres = cursos.map { it.nombre.uppercase() }
+    println("Nombres en mayus: $nombres")
+    println("----")
+    val porCarrera = cursos.groupBy { it.carrera }
+    println("Por carrera: $porCarrera")
+    println("----")
+    val creditosInf = cursos
+        .filter { it.carrera == "INF" }
+        .sumOf { it.creditos }
+    println("Creditos INF: $creditosInf")
 }
 
-private fun partition(cursos: List<Curso>) {
-    println("— partition —")
-    val (inf, resto) = cursos.partition { it.carrera == "INF" }
-    println("  INF: ${inf.map { it.nombre }}")
-    println("  resto: ${resto.map { it.nombre }}\n")
+fun listasBasicasYDataClassCopy(cursos: List<Curso>) {
+    println("- data class: equals, copy -")
+    val a = cursos.first()
+    val b = a.copy()
+    println(" a == b ? ${a == b}")
+    val c = a.copy(creditos = 8)
+    println("Original: $a")
+    println("Con copy modif: $c")
 }
 
-private fun foldYReduce() {
-    println("— fold / reduce —")
-    val nums = listOf(2, 3, 4)
-    val producto = nums.fold(1) { acc, n -> acc * n }
-    val suma = nums.reduce { a, b -> a + b }
-    println("  nums=$nums → producto (fold)=$producto, suma (reduce)=$suma\n")
-}
 
-private fun mapVsMutableMap() {
-    println("— mapOf vs mutableMapOf —")
-    val ro = mapOf("a" to 1, "b" to 2)
-    val rw = mutableMapOf("x" to 10)
-    rw["y"] = 20
-    println("  inmutable: $ro")
-    println("  mutable tras añadir: $rw")
-}
