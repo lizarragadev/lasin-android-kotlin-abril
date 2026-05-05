@@ -12,18 +12,19 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun NotesScreen(
-    state: NotesUiState,
-    onQueryChange: (String) -> Unit,
-    onOnlyPendingChange: (Boolean) -> Unit,
-    onAddNoteClick: () -> Unit,
-    onSyncClick: () -> Unit
+    viewModel: NotesViewModel,
+    modifier: Modifier = Modifier
 ) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
     Column(
        modifier = Modifier
            .fillMaxSize()
@@ -32,7 +33,7 @@ fun NotesScreen(
     ) {
         OutlinedTextField(
             value = state.query,
-            onValueChange = onQueryChange,
+            onValueChange = viewModel::onQueryChange,
             label = { Text("Search") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -43,15 +44,15 @@ fun NotesScreen(
             Text("Solo pendientes")
             Switch(
                 checked = state.onlyPending,
-                onCheckedChange = onOnlyPendingChange
+                onCheckedChange = viewModel::onOnlyPendingChange
             )
         }
         Row(horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()) {
-            Button(onClick = onAddNoteClick) {
+            Button(onClick = viewModel::onAddNoteClick) {
                 Text("Agregar nota")
             }
-            Button(onClick = onSyncClick) {
+            Button(onClick = viewModel::onSyncClick) {
                 Text("Sync API")
             }
         }
