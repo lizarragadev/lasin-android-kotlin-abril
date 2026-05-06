@@ -13,6 +13,8 @@ class NotesRepository(
 ) {
     fun observeNotes(onlyPending: Boolean): Flow<List<NoteEntity>> = dao.observeNotes(onlyPending)
 
+    fun searchWithLike(query: String): Flow<List<NoteEntity>> = dao.searchNotesWithLike(query)
+
     suspend fun addNote(title: String, description: String) = withContext(ioDispatcher) {
         dao.insertNote(
             NoteEntity(title = title, description = description, isDone = false, priority = 1)

@@ -2,6 +2,7 @@ package bo.edu.umsa.curso.clase04.mvvm.ui
 
 import androidx.compose.runtime.currentComposer
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import bo.edu.umsa.curso.clase04.mvvm.data.repository.NotesRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,4 +39,16 @@ class NotesViewModel(
          // Lógica para sincronizar con la API
      }
 
+}
+
+class NotesViewModelFactory(
+    private val repository: NotesRepository
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(NotesViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return NotesViewModel(repository) as T
+        }
+        throw IllegalArgumentException("ViewModel no soportado: ${modelClass.name}")
+    }
 }

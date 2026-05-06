@@ -9,7 +9,8 @@ import androidx.sqlite.db.SupportSQLiteDatabase
     entities = [
         NoteEntity::class,
         CategoryEntity::class,
-        NoteCategoryCrossRef::class
+        NoteCategoryCrossRef::class,
+        NoteFts::class
     ],
     version = 1,
     exportSchema = false
@@ -19,8 +20,10 @@ abstract class AppDatabase : RoomDatabase() {
 
     companion object {
         val MIGRATION_1_2 = object : Migration(1, 2) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("ALTER TABLE notes ADD COLUMN priority INTEGER NOT NULL DEFAULT 1")
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "ALTER TABLE notes ADD COLUMN priority INTEGER NOT NULL DEFAULT 1"
+                )
             }
         }
     }
